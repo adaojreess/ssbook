@@ -12,12 +12,17 @@ class PrimaryAppBar extends StatelessWidget with PreferredSizeWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(bottomRight: Radius.circular(32)),
       ),
-      backgroundColor: AppColors.primaryColor,
+      backgroundColor: Colors.white,
       title: Row(
-        children: const [
-          Text('SSBOOK'),
-          Spacer(),
-          CircleAvatar(),
+        children: [
+          Text(
+            'SSBOOK',
+            style: TextStyle(
+              color: AppColors.primaryColor,
+            ),
+          ),
+          const Spacer(),
+          const CircleAvatar(),
         ],
       ),
       bottom: bottom,
