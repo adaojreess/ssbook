@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:desafio_studio_sol/src/components/error_image_network/error_image_network.dart';
 import 'package:desafio_studio_sol/src/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-import '../components/appbar/primary_app_bar.dart';
+import '../components/appbar/dafault_app_bar.dart';
+import '../components/placeholder_image_network/placeholder_image_network.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
@@ -21,59 +23,37 @@ class _HomePageState extends State<HomePage> {
       home: DefaultTabController(
         length: 2,
         child: Scaffold(
-          appBar: PrimaryAppBar(
-            bottom: _bottomAppBar(),
+          appBar: DefaultAppBar(
+            bottom: _bottomAppBarWidget(),
           ),
           backgroundColor: AppColors.backgroundColor,
           body: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  margin: defaultMarginBody.copyWith(top: 32),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Livros favoritos',
-                        style: TextStyle(
-                          color: AppColors.accentColor.withOpacity(1),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+            child: ConstrainedBox(
+              constraints:
+                  BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  ...favoriteBooksWidgetList,
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(32),
                         ),
                       ),
-                      Text(
-                        'Ver todos',
-                        style: TextStyle(
-                          color: AppColors.primaryColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 30),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: List.generate(
-                        10,
-                        (index) => Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                          ).copyWith(
-                            left: index == 0 ? 20 : 10,
-                            right: index == 9 ? 20 : 10,
-                          ),
-                          child: _bookCard(),
-                        ),
+                      child: Column(
+                        children: [
+                          ...favoriteAuthorsWidgetList,
+                          _sessionWidget('Biblioteca', showSeeAll: false)
+                        ],
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -81,25 +61,50 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  EdgeInsets get defaultMarginBody =>
-      const EdgeInsets.symmetric(horizontal: 20);
+  Widget _titleWidget(String title) => Text(
+        title,
+        style: TextStyle(
+          color: AppColors.accentColor.withOpacity(1),
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      );
 
-  Widget _bookCard() {
-    return Container(
+  Widget _sessionWidget(String title, {bool showSeeAll = true}) => Container(
+        margin: _defaultMarginBody.copyWith(top: 32),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _titleWidget(title),
+            if (showSeeAll)
+              Text(
+                'Ver todos',
+                style: TextStyle(
+                  color: AppColors.primaryColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+          ],
+        ),
+      );
+
+  Widget _bookCardWidget() {
+    return SizedBox(
       width: MediaQuery.of(context).size.width / 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CachedNetworkImage(
             imageUrl: 'https://m.media-amazon.com/images/I/51jmxTnOv6L.jpg',
-            placeholder: (_, __) => const CircularProgressIndicator(),
+            placeholder: (_, __) => const PlaceholderImageNetwork(),
             imageBuilder: (_, image) {
               return ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: Image(image: image),
               );
             },
-            errorWidget: (_, __, ___) => Text('Error'),
+            errorWidget: (_, __, ___) => const ErrorImageNetwork(),
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
@@ -125,21 +130,94 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  PreferredSizeWidget _bottomAppBar() {
-    return TabBar(
-      indicatorWeight: 4,
-      indicator: MaterialIndicator(),
-      padding: const EdgeInsets.only(right: 70),
-      indicatorSize: TabBarIndicatorSize.label,
-      indicatorColor: AppColors.primaryColor,
-      tabs: <Widget>[
-        _tabBar(title: 'Meus livros'),
-        _tabBar(title: 'Emprestados'),
-      ],
-    );
-  }
+  List<Widget> get favoriteBooksWidgetList => [
+        _sessionWidget('Livros favoritos'),
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 30),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(
+                10,
+                (index) => Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                  ).copyWith(
+                    left: index == 0 ? 20 : 10,
+                    right: index == 9 ? 20 : 10,
+                  ),
+                  child: _bookCardWidget(),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ];
 
-  Widget _tabBar({required String title}) {
+  List<Widget> get favoriteAuthorsWidgetList => [
+        _sessionWidget('Autores favoritos'),
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 30),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(
+                10,
+                (index) => Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                  ).copyWith(
+                    left: index == 0 ? 20 : 10,
+                    right: index == 9 ? 20 : 10,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      border: Border.all(
+                          color: AppColors.accentColor.withOpacity(1),
+                          width: .5),
+                    ),
+                    height: MediaQuery.of(context).size.height / 10,
+                    child: Row(
+                      children: [
+                        CachedNetworkImage(
+                          imageUrl:
+                              'https://cdn.pensador.com/img/authors/st/ep/stephen-king-l.jpg',
+                          placeholder: (_, __) =>
+                              const PlaceholderImageNetwork(),
+                          errorWidget: (_, __, ___) =>
+                              const ErrorImageNetwork(),
+                          imageBuilder: (_, image) => ClipRRect(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                            child: Image(image: image),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width / 10,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _titleWidget('Stephen King'),
+                              const SizedBox(height: 5),
+                              const Text('6 livros')
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ];
+  Widget _tabBarWidget({required String title}) {
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: 20,
@@ -153,6 +231,23 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  PreferredSizeWidget _bottomAppBarWidget() {
+    return TabBar(
+      indicatorWeight: 4,
+      indicator: MaterialIndicator(),
+      padding: const EdgeInsets.only(right: 70),
+      indicatorSize: TabBarIndicatorSize.label,
+      indicatorColor: AppColors.primaryColor,
+      tabs: <Widget>[
+        _tabBarWidget(title: 'Meus livros'),
+        _tabBarWidget(title: 'Emprestados'),
+      ],
+    );
+  }
+
+  EdgeInsets get _defaultMarginBody =>
+      const EdgeInsets.symmetric(horizontal: 20);
 }
 
 class MaterialIndicator extends Decoration {

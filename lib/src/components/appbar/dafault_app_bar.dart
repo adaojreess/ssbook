@@ -1,8 +1,8 @@
 import 'package:desafio_studio_sol/src/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class PrimaryAppBar extends StatelessWidget with PreferredSizeWidget {
-  PrimaryAppBar({Key? key, this.bottom}) : super(key: key);
+class DefaultAppBar extends StatelessWidget with PreferredSizeWidget {
+  DefaultAppBar({Key? key, this.bottom}) : super(key: key);
 
   PreferredSizeWidget? bottom;
 
