@@ -26,46 +26,54 @@ class _HomePageState extends State<HomePage> {
           ),
           backgroundColor: AppColors.backgroundColor,
           body: SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: defaultMarginBody.copyWith(top: 32),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Livros favoritos',
+                        style: TextStyle(
+                          color: AppColors.accentColor.withOpacity(1),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Ver todos',
+                        style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 30),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Livros favoritos',
-                          style: TextStyle(
-                            color: AppColors.accentColor.withOpacity(1),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                      children: List.generate(
+                        10,
+                        (index) => Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                          ).copyWith(
+                            left: index == 0 ? 20 : 10,
+                            right: index == 9 ? 20 : 10,
                           ),
+                          child: _bookCard(),
                         ),
-                        Text(
-                          'Ver todos',
-                          style: TextStyle(
-                            color: AppColors.primaryColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 30,
-                      horizontal: 10,
-                    ),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 3,
-                      child: _bookCard(),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -73,41 +81,47 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  EdgeInsets get defaultMarginBody =>
+      const EdgeInsets.symmetric(horizontal: 20);
+
   Widget _bookCard() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CachedNetworkImage(
-          imageUrl: 'https://m.media-amazon.com/images/I/51jmxTnOv6L.jpg',
-          placeholder: (_, __) => const CircularProgressIndicator(),
-          imageBuilder: (_, image) {
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image(image: image),
-            );
-          },
-          errorWidget: (_, __, ___) => Text('Error'),
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          child: Text(
-            'O duque e eu (Os Bridgertons)',
-            style: TextStyle(
-              color: AppColors.accentColor.withOpacity(1),
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
+    return Container(
+      width: MediaQuery.of(context).size.width / 3,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CachedNetworkImage(
+            imageUrl: 'https://m.media-amazon.com/images/I/51jmxTnOv6L.jpg',
+            placeholder: (_, __) => const CircularProgressIndicator(),
+            imageBuilder: (_, image) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image(image: image),
+              );
+            },
+            errorWidget: (_, __, ___) => Text('Error'),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              'O duque e eu (Os Bridgertons)',
+              style: TextStyle(
+                color: AppColors.accentColor.withOpacity(1),
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
-        ),
-        Text(
-          'Julia Quinn',
-          style: TextStyle(
-            color: AppColors.accentColor.withOpacity(1),
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          ),
-        )
-      ],
+          Text(
+            'Julia Quinn',
+            style: TextStyle(
+              color: AppColors.accentColor.withOpacity(1),
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+          )
+        ],
+      ),
     );
   }
 
