@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:desafio_studio_sol/src/components/error_image_network/error_image_network.dart';
 import 'package:desafio_studio_sol/src/theme/app_colors.dart';
+import 'package:desafio_studio_sol/src/views/book/book_page.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appbar/dafault_app_bar.dart';
@@ -28,35 +29,148 @@ class _HomePageState extends State<HomePage> {
           ),
           backgroundColor: AppColors.backgroundColor,
           body: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints:
-                  BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  ...favoriteBooksWidgetList,
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(32),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          ...favoriteAuthorsWidgetList,
-                          _sessionWidget('Biblioteca', showSeeAll: false)
-                        ],
-                      ),
+            child: Column(
+              children: [
+                ..._favoriteBooksWidgetList,
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(32),
                     ),
                   ),
-                ],
+                  child: Column(
+                    children: [
+                      ..._favoriteAuthorsWidgetList,
+                      _sessionWidget('Biblioteca', showSeeAll: false),
+                      SizedBox(height: MediaQuery.of(context).size.height / 40),
+                      _categoryListWidget(context),
+                      SizedBox(height: MediaQuery.of(context).size.height / 40),
+                      _bookListCardWidget(context)
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: 0,
+            selectedItemColor: AppColors.primaryColor,
+            unselectedItemColor: AppColors.accentColor.withOpacity(1),
+            showUnselectedLabels: true,
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.home,
+                  ),
+                  label: 'Inicio'),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.add_circle_rounded,
+                ),
+                label: 'Adicionar',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.search,
+                ),
+                label: 'Busca',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.add_circle_rounded,
+                ),
+                label: 'Favoritos',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  SingleChildScrollView _categoryListWidget(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: _defaultMarginBody,
+        child: Row(
+          children: List.generate(
+            10,
+            (index) => Container(
+              margin: EdgeInsets.only(
+                left: index == 0 ? 0 : MediaQuery.of(context).size.width * .01,
+                right: index == 9 ? 0 : MediaQuery.of(context).size.width * .01,
+              ),
+              child: _categoryCardWidget(
+                context,
+                "Todos",
+                currentCategory: index == 0,
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Container _categoryCardWidget(BuildContext context, String text,
+      {bool currentCategory = false}) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: .5,
+          color: AppColors.accentColor.withOpacity(1),
+        ),
+        borderRadius: BorderRadius.circular(30),
+        color: currentCategory ? AppColors.primaryColor : Colors.white,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: MediaQuery.of(context).size.width * .05,
+        vertical: MediaQuery.of(context).size.height * .015,
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: currentCategory
+              ? Colors.white
+              : AppColors.accentColor.withOpacity(1),
+        ),
+      ),
+    );
+  }
+
+  Padding _bookListCardWidget(BuildContext context) {
+    return Padding(
+      padding: _defaultMarginBody,
+      child: Row(
+        children: [
+          CachedNetworkImage(
+            imageUrl: 'https://m.media-amazon.com/images/I/51jmxTnOv6L.jpg',
+            placeholder: (_, __) => const PlaceholderImageNetwork(),
+            errorWidget: (_, __, ___) => const ErrorImageNetwork(),
+            imageBuilder: (_, image) => ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height / 5,
+                child: Image(image: image),
+              ),
+            ),
+          ),
+          Flexible(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width / 20),
+              child: Column(
+                children: [
+                  _bookTitle(
+                    'O duque e eu (Os Bridgertons livro novo 1)',
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -90,47 +204,59 @@ class _HomePageState extends State<HomePage> {
       );
 
   Widget _bookCardWidget() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width / 3,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CachedNetworkImage(
-            imageUrl: 'https://m.media-amazon.com/images/I/51jmxTnOv6L.jpg',
-            placeholder: (_, __) => const PlaceholderImageNetwork(),
-            imageBuilder: (_, image) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image(image: image),
-              );
-            },
-            errorWidget: (_, __, ___) => const ErrorImageNetwork(),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BookPage(),
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              'O duque e eu (Os Bridgertons)',
+        );
+      },
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width / 3,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CachedNetworkImage(
+              imageUrl: 'https://m.media-amazon.com/images/I/51jmxTnOv6L.jpg',
+              placeholder: (_, __) => const PlaceholderImageNetwork(),
+              imageBuilder: (_, image) {
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image(image: image),
+                );
+              },
+              errorWidget: (_, __, ___) => const ErrorImageNetwork(),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              child: _bookTitle('O duque e eu (Os Bridgertons livro novo 1)'),
+            ),
+            Text(
+              'Julia Quinn',
               style: TextStyle(
                 color: AppColors.accentColor.withOpacity(1),
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
               ),
-            ),
-          ),
-          Text(
-            'Julia Quinn',
-            style: TextStyle(
-              color: AppColors.accentColor.withOpacity(1),
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
 
-  List<Widget> get favoriteBooksWidgetList => [
+  Widget _bookTitle(String title) => Text(
+        title,
+        style: TextStyle(
+          color: AppColors.accentColor.withOpacity(1),
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+        ),
+      );
+
+  List<Widget> get _favoriteBooksWidgetList => [
         _sessionWidget('Livros favoritos'),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 30),
@@ -154,7 +280,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ];
 
-  List<Widget> get favoriteAuthorsWidgetList => [
+  List<Widget> get _favoriteAuthorsWidgetList => [
         _sessionWidget('Autores favoritos'),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 30),
@@ -202,7 +328,7 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              _titleWidget('Stephen King'),
+                              _bookTitle('Stephen King'),
                               const SizedBox(height: 5),
                               const Text('6 livros')
                             ],
@@ -217,6 +343,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ];
+
   Widget _tabBarWidget({required String title}) {
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -236,7 +363,7 @@ class _HomePageState extends State<HomePage> {
     return TabBar(
       indicatorWeight: 4,
       indicator: MaterialIndicator(),
-      padding: const EdgeInsets.only(right: 70),
+      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width / 10),
       indicatorSize: TabBarIndicatorSize.label,
       indicatorColor: AppColors.primaryColor,
       tabs: <Widget>[

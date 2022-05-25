@@ -15,10 +15,22 @@ class DefaultAppBar extends StatelessWidget with PreferredSizeWidget {
       backgroundColor: Colors.white,
       title: Row(
         children: [
-          Text(
-            'SSBOOK',
-            style: TextStyle(
-              color: AppColors.primaryColor,
+          Text.rich(
+            TextSpan(
+              text: 'SS',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 22,
+                color: AppColors.accentColor.withOpacity(1),
+              ),
+              children: [
+                TextSpan(
+                  text: 'BOOK',
+                  style: TextStyle(
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+              ],
             ),
           ),
           const Spacer(),
