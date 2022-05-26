@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:desafio_studio_sol/src/repositories/profile_repository_impl.dart';
 import 'package:desafio_studio_sol/src/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DefaultAppBar extends StatelessWidget with PreferredSizeWidget {
   DefaultAppBar({
@@ -28,9 +29,9 @@ class DefaultAppBar extends StatelessWidget with PreferredSizeWidget {
           Text.rich(
             TextSpan(
               text: 'SS',
-              style: TextStyle(
+              style: GoogleFonts.bebasNeue(
                 fontWeight: FontWeight.w400,
-                fontSize: 22,
+                fontSize: 33,
                 color: AppColors.accentColor.withOpacity(1),
               ),
               children: [
