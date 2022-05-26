@@ -2,13 +2,12 @@ import 'package:desafio_studio_sol/src/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavigationWidget extends StatelessWidget {
-  const BottomNavigationWidget({
-    Key? key,
-  }) : super(key: key);
+  const BottomNavigationWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      key: key,
       currentIndex: 0,
       selectedItemColor: AppColors.primaryColor,
       unselectedItemColor: AppColors.accentColor.withOpacity(1),

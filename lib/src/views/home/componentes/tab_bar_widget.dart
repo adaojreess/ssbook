@@ -19,7 +19,10 @@ class TabBarWidget extends StatelessWidget {
       child: Tab(
         child: Text(
           title,
-          style: TextStyle(color: AppColors.accentColor.withOpacity(1.0)),
+          style: TextStyle(
+            fontSize: MediaQuery.of(context).size.height * .018,
+            color: AppColors.accentColor.withOpacity(1.0),
+          ),
         ),
       ),
     );
