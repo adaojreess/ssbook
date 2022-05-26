@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../components/appbar/dafault_app_bar.dart';
 import '../components/placeholder_image_network/placeholder_image_network.dart';
+import '../models/author_model.dart';
 import '../models/book_model.dart';
 
 class HomePage extends StatefulWidget {
@@ -331,67 +332,80 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> get _favoriteAuthorsWidgetList => [
         _sessionWidget('Autores favoritos'),
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 30),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: List.generate(
-                10,
-                (index) => Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                  ).copyWith(
-                    left: index == 0 ? 20 : 10,
-                    right: index == 9 ? 20 : 10,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      border: Border.all(
-                          color: AppColors.accentColor.withOpacity(1),
-                          width: .5),
-                    ),
-                    height: MediaQuery.of(context).size.height / 10,
-                    child: Row(
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl:
-                              'https://cdn.pensador.com/img/authors/st/ep/stephen-king-l.jpg',
-                          placeholder: (_, __) =>
-                              const PlaceholderImageNetwork(),
-                          errorWidget: (_, __, ___) =>
-                              const ErrorImageNetwork(),
-                          imageBuilder: (_, image) => ClipRRect(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(8),
-                            ),
-                            child: Image(image: image),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                            horizontal: MediaQuery.of(context).size.width / 10,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _bookTitle('Stephen King'),
-                              const SizedBox(height: 5),
-                              const Text('6 livros')
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+        ValueListenableBuilder<bool>(
+          valueListenable: store.loadingFavoriteAuthors,
+          builder: (_, loading, __) =>
+              loading ? _loadingBookList() : const SizedBox(),
+        ),
+        ValueListenableBuilder<List<AuthorModel>>(
+          valueListenable: store.favoriteAuthors,
+          builder: (_, favoriteAuthors, __) => Container(
+            margin: const EdgeInsets.symmetric(vertical: 30),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: favoriteAuthors
+                    .map(
+                      (author) => _authorCardWidget(
+                          favoriteAuthors.indexOf(author), author),
+                    )
+                    .toList(),
               ),
             ),
           ),
         ),
       ];
+
+  Container _authorCardWidget(int index, AuthorModel author) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 10,
+      ).copyWith(
+        left: index == 0 ? 20 : 10,
+        right: index == 9 ? 20 : 10,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          border: Border.all(
+              color: AppColors.accentColor.withOpacity(1), width: .5),
+        ),
+        height: MediaQuery.of(context).size.height / 10,
+        child: Row(
+          children: [
+            CachedNetworkImage(
+              imageUrl: author.picture ?? "",
+              placeholder: (_, __) => const PlaceholderImageNetwork(),
+              errorWidget: (_, __, ___) => const ErrorImageNetwork(),
+              imageBuilder: (_, image) => ClipRRect(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(8),
+                ),
+                child: Image(image: image),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width / 10,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _bookTitle(author.name ?? ''),
+                  const SizedBox(height: 5),
+                  if (author.booksCount == 1)
+                    Text('${author.booksCount} livro')
+                  else
+                    Text('${author.booksCount} livros')
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _tabBarWidget({required String title}) {
     return Container(
