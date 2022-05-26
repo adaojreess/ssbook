@@ -1,4 +1,4 @@
-import 'package:desafio_studio_sol/global_vars.dart';
+import 'package:desafio_studio_sol/global.dart';
 import 'package:desafio_studio_sol/src/models/response_model.dart';
 import 'package:desafio_studio_sol/src/repositories/profile_repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

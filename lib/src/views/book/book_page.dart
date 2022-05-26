@@ -5,8 +5,6 @@ import 'package:desafio_studio_sol/src/models/book_model.dart';
 import 'package:desafio_studio_sol/src/theme/app_colors.dart';
 import 'package:desafio_studio_sol/src/views/book/book_page_store.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class BookPage extends StatelessWidget {
   BookPage(this.book, {Key? key}) : super(key: key);
@@ -136,57 +134,55 @@ class BookPage extends StatelessWidget {
 
   Container _bookTitleWidget(BuildContext context) {
     return Container(
-      child: Container(
-        alignment: Alignment.topCenter,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: ValueListenableBuilder<BookModel>(
-                    valueListenable: store.bookDetails,
-                    builder: (_, bookDetails, __) => Text(
-                      bookDetails.name ?? '',
-                      style: const TextStyle(
-                        fontSize: 20,
-                      ),
+      alignment: Alignment.topCenter,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: ValueListenableBuilder<BookModel>(
+                  valueListenable: store.bookDetails,
+                  builder: (_, bookDetails, __) => Text(
+                    bookDetails.name ?? '',
+                    style: const TextStyle(
+                      fontSize: 20,
                     ),
                   ),
                 ),
-                ValueListenableBuilder<bool>(
-                  valueListenable: store.isFavorite,
-                  builder: (_, isFavorite, __) => IconButton(
-                    onPressed: () {
-                      store.setIsFavorite(!isFavorite);
-                    },
-                    icon: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavorite ? AppColors.primaryColor : null,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * .01,
-                bottom: MediaQuery.of(context).size.height * .05,
               ),
-              child: ValueListenableBuilder<BookModel>(
-                valueListenable: store.bookDetails,
-                builder: (_, bookDetails, __) => Text(
-                  bookDetails.author?.name ?? '',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.accentColor.withOpacity(1),
+              ValueListenableBuilder<bool>(
+                valueListenable: store.isFavorite,
+                builder: (_, isFavorite, __) => IconButton(
+                  onPressed: () {
+                    store.setIsFavorite(!isFavorite);
+                  },
+                  icon: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? AppColors.primaryColor : null,
                   ),
                 ),
               ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).size.height * .01,
+              bottom: MediaQuery.of(context).size.height * .05,
             ),
-          ],
-        ),
+            child: ValueListenableBuilder<BookModel>(
+              valueListenable: store.bookDetails,
+              builder: (_, bookDetails, __) => Text(
+                bookDetails.author?.name ?? '',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.accentColor.withOpacity(1),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:desafio_studio_sol/src/models/book_model.dart';
 import 'package:desafio_studio_sol/src/repositories/book_repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '../../global_vars.dart';
+import '../../global.dart';
 import '../models/response_model.dart';
 
 class BookRepositoryImpl implements BookRepository {

@@ -4,12 +4,11 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:gql/ast.dart';
 
 class APIGraphQL implements API {
-  HttpLink httpLink =
-      HttpLink('https://us-central1-ss-devops.cloudfunctions.net/GraphQL');
   late GraphQLClient client;
-  APIGraphQL(this.apiUrl) {
+  APIGraphQL(String apiUrl) {
+    this.apiUrl = apiUrl;
     client = GraphQLClient(
-      link: httpLink,
+      link: HttpLink(apiUrl),
       cache: GraphQLCache(
         store: InMemoryStore(),
       ),

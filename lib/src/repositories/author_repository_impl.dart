@@ -1,7 +1,7 @@
 import 'package:desafio_studio_sol/src/models/author_model.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '../../global_vars.dart';
+import '../../global.dart';
 import '../models/response_model.dart';
 import 'author_repository.dart';
 
