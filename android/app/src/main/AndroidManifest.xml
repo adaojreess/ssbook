@@ -2,7 +2,7 @@
     package="com.example.desafio_studio_sol">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="desafio_studio_sol"
+        android:label="SSBook"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
