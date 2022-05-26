@@ -30,9 +30,12 @@ class BookPage extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: double.infinity,
-                    child: Image(
-                      image: image,
-                      fit: BoxFit.contain,
+                    child: Hero(
+                      tag: 'bookCover${book.id}',
+                      child: Image(
+                        image: image,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   )
                 ],
@@ -154,10 +157,18 @@ class BookPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.favorite),
-                )
+                ValueListenableBuilder<bool>(
+                  valueListenable: store.isFavorite,
+                  builder: (_, isFavorite, __) => IconButton(
+                    onPressed: () {
+                      store.setIsFavorite(!isFavorite);
+                    },
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorite ? AppColors.primaryColor : null,
+                    ),
+                  ),
+                ),
               ],
             ),
             Padding(

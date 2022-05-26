@@ -61,6 +61,7 @@ class BookRepositoryImpl implements BookRepository {
           name
           cover
           description
+          isFavorite
           author {
             name
           }

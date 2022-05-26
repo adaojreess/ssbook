@@ -5,12 +5,20 @@ import '../../models/book_model.dart';
 
 class BookStore {
   BookStore(this.book) {
-    getBook();
+    getBook().then((value) {
+      setIsFavorite(bookDetails.value.isFavorite ?? false);
+    });
   }
   BookModel book;
   final ValueNotifier<bool> loadingBook = ValueNotifier(false);
   late final ValueNotifier<BookModel> bookDetails = ValueNotifier(book);
   final ValueNotifier<String> errorMessageBook = ValueNotifier("");
+
+  late final ValueNotifier<bool> isFavorite = ValueNotifier(false);
+
+  setIsFavorite(bool value) {
+    isFavorite.value = value;
+  }
 
   Future<void> getBook() async {
     try {

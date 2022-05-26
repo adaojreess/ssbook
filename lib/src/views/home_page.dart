@@ -265,7 +265,10 @@ class _HomePageState extends State<HomePage> {
               imageBuilder: (_, image) {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: Image(image: image),
+                  child: Hero(
+                    tag: 'bookCover${book.id}',
+                    child: Image(image: image),
+                  ),
                 );
               },
               errorWidget: (_, __, ___) => const ErrorImageNetwork(),
