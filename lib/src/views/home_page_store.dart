@@ -10,6 +10,8 @@ class HomePageStore {
     getFavoriteAuthors();
     getBookList();
   }
+  final ValueNotifier<String> currentCategory = ValueNotifier("Todos");
+  void setCurrentCategory(String value) => currentCategory.value = value;
 
   final ValueNotifier<bool> loadingFavoriteBookList = ValueNotifier(false);
   final ValueNotifier<List<BookModel>> favoriteBookList = ValueNotifier([]);

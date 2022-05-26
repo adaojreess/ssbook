@@ -131,8 +131,12 @@ class _HomePageState extends State<HomePage> {
                         ? 0
                         : MediaQuery.of(context).size.width * .01,
                   ),
-                  child: _categoryCardWidget(context, category,
-                      currentCategory: category == 'Todos'),
+                  child: ValueListenableBuilder<String>(
+                    valueListenable: store.currentCategory,
+                    builder: (_, currentCategory, __) => _categoryCardWidget(
+                        context, category,
+                        currentCategory: category == currentCategory),
+                  ),
                 ),
               )
               .toList(),
@@ -141,27 +145,32 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container _categoryCardWidget(BuildContext context, String text,
+  Widget _categoryCardWidget(BuildContext context, String text,
       {bool currentCategory = false}) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: .5,
-          color: AppColors.accentColor.withOpacity(1),
+    return InkWell(
+      onTap: () {
+        store.setCurrentCategory(text);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: .5,
+            color: AppColors.accentColor.withOpacity(1),
+          ),
+          borderRadius: BorderRadius.circular(30),
+          color: currentCategory ? AppColors.primaryColor : Colors.white,
         ),
-        borderRadius: BorderRadius.circular(30),
-        color: currentCategory ? AppColors.primaryColor : Colors.white,
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * .05,
-        vertical: MediaQuery.of(context).size.height * .015,
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: currentCategory
-              ? Colors.white
-              : AppColors.accentColor.withOpacity(1),
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * .05,
+          vertical: MediaQuery.of(context).size.height * .015,
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: currentCategory
+                ? Colors.white
+                : AppColors.accentColor.withOpacity(1),
+          ),
         ),
       ),
     );
