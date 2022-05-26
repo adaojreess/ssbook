@@ -1,11 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:desafio_studio_sol/global_vars.dart';
 import 'package:desafio_studio_sol/src/components/error_image_network/error_image_network.dart';
+import 'package:desafio_studio_sol/src/repositories/book_repository_impl.dart';
 import 'package:desafio_studio_sol/src/theme/app_colors.dart';
 import 'package:desafio_studio_sol/src/views/book/book_page.dart';
+import 'package:desafio_studio_sol/src/views/home_page_store.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appbar/dafault_app_bar.dart';
 import '../components/placeholder_image_network/placeholder_image_network.dart';
+import '../models/book_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
@@ -17,6 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final HomePageStore store = HomePageStore();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -203,7 +208,7 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  Widget _bookCardWidget() {
+  Widget _bookCardWidget(BookModel book) {
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -219,7 +224,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CachedNetworkImage(
-              imageUrl: 'https://m.media-amazon.com/images/I/51jmxTnOv6L.jpg',
+              imageUrl: book.cover ?? '',
               placeholder: (_, __) => const PlaceholderImageNetwork(),
               imageBuilder: (_, image) {
                 return ClipRRect(
@@ -231,10 +236,10 @@ class _HomePageState extends State<HomePage> {
             ),
             Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
-              child: _bookTitle('O duque e eu (Os Bridgertons livro novo 1)'),
+              child: _bookTitle(book.name ?? ''),
             ),
             Text(
-              'Julia Quinn',
+              book.author?.name ?? '',
               style: TextStyle(
                 color: AppColors.accentColor.withOpacity(1),
                 fontSize: 14,
@@ -247,38 +252,54 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _bookTitle(String title) => Text(
-        title,
-        style: TextStyle(
-          color: AppColors.accentColor.withOpacity(1),
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-        ),
-      );
+  Widget _bookTitle(String title) => Text(title,
+      style: TextStyle(
+        color: AppColors.accentColor.withOpacity(1),
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+      ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis);
 
   List<Widget> get _favoriteBooksWidgetList => [
         _sessionWidget('Livros favoritos'),
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 30),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: List.generate(
-                10,
-                (index) => Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                  ).copyWith(
-                    left: index == 0 ? 20 : 10,
-                    right: index == 9 ? 20 : 10,
-                  ),
-                  child: _bookCardWidget(),
+        ValueListenableBuilder<bool>(
+          valueListenable: store.loadingBookList,
+          builder: (_, loading, __) =>
+              loading ? _loadingBookList() : SizedBox(),
+        ),
+        ValueListenableBuilder<List<BookModel>>(
+          valueListenable: store.bookList,
+          builder: (_, bookList, __) {
+            return Container(
+              margin: const EdgeInsets.symmetric(vertical: 30),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: bookList
+                      .map((book) => Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                            ).copyWith(
+                              left: bookList.indexOf(book) == 0 ? 20 : 10,
+                              right: bookList.indexOf(book) == 9 ? 20 : 10,
+                            ),
+                            child: _bookCardWidget(book),
+                          ))
+                      .toList(),
                 ),
               ),
-            ),
-          ),
-        ),
+            );
+          },
+        )
       ];
+
+  Widget _loadingBookList() => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: CircularProgressIndicator(
+          color: AppColors.primaryColor,
+        ),
+      );
 
   List<Widget> get _favoriteAuthorsWidgetList => [
         _sessionWidget('Autores favoritos'),

@@ -1,5 +1,3 @@
-import 'package:desafio_studio_sol/src/components/appbar/dafault_app_bar.dart';
-import 'package:desafio_studio_sol/src/theme/app_colors.dart';
 import 'package:desafio_studio_sol/src/theme/default_theme.dart';
 import 'package:desafio_studio_sol/src/views/home_page.dart';
 import 'package:flutter/material.dart';
