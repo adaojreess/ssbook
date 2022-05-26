@@ -4,4 +4,7 @@ abstract class BookRepository {
   Future<List<BookModel>> getBookList();
 
   Future<List<BookModel>> getFavoriteBookList();
+
+
+  Future<BookModel> getBook(String id);
 }

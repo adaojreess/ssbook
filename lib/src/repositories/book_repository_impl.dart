@@ -51,4 +51,25 @@ class BookRepositoryImpl implements BookRepository {
         .toList();
     return bookList;
   }
+
+  @override
+  Future<BookModel> getBook(String id) async {
+    String readRepositories = """
+      query bookQuery {
+        book(id:"$id") {
+          id
+          name
+          cover
+          description
+          author {
+            name
+          }
+        }
+      }
+""";
+    final result = await api.value.get(readRepositories);
+    final book = BookModel.fromJson(
+        (result as ResponseModel<QueryResult>).response?.data!['book']);
+    return book;
+  }
 }

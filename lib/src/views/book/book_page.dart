@@ -1,33 +1,42 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:desafio_studio_sol/src/components/error_image_network/error_image_network.dart';
 import 'package:desafio_studio_sol/src/components/placeholder_image_network/placeholder_image_network.dart';
+import 'package:desafio_studio_sol/src/models/book_model.dart';
 import 'package:desafio_studio_sol/src/theme/app_colors.dart';
+import 'package:desafio_studio_sol/src/views/book/book_page_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class BookPage extends StatelessWidget {
-  const BookPage({Key? key}) : super(key: key);
+  BookPage(this.book, {Key? key}) : super(key: key);
+
+  final BookModel book;
+
+  late final store = BookStore(book);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          CachedNetworkImage(
-            imageUrl: 'https://m.media-amazon.com/images/I/51jmxTnOv6L.jpg',
-            errorWidget: (_, __, ___) => const ErrorImageNetwork(),
-            placeholder: (_, __) => const PlaceholderImageNetwork(),
-            imageBuilder: (_, image) => Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Image(
-                    image: image,
-                    fit: BoxFit.contain,
-                  ),
-                )
-              ],
+          ValueListenableBuilder<BookModel>(
+            valueListenable: store.bookDetails,
+            builder: (_, bookDetails, __) => CachedNetworkImage(
+              imageUrl: bookDetails.cover ?? '',
+              errorWidget: (_, __, ___) => const ErrorImageNetwork(),
+              placeholder: (_, __) => const PlaceholderImageNetwork(),
+              imageBuilder: (_, image) => Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Image(
+                      image: image,
+                      fit: BoxFit.contain,
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           Positioned(
@@ -105,16 +114,22 @@ class BookPage extends StatelessWidget {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).size.height * .05,
       ),
-      child: Text(
-        """
-Simon Basset, o irresistível duque de Hastings, acaba de retornar a Londres depois de seis anos viajando pelo mundo. Rico, bonito e solteiro, ele é um prato cheio para as mães da alta sociedade, que só pensam em arrumar um bom partido para suas filhas. Simon, porém, tem o firme propósito de nunca se casar. Assim, para se livrar das garras dessas mulheres, precisa de um plano infalível. É quando entra em cena Daphne Bridgerton, a irmã mais nova de seu melhor amigo. Apesar de espirituosa e dona de uma personalidade marcante, todos os homens que se interessam por ela são velhos demais, pouco inteligentes ou destituídos de qualquer tipo de charme. E os que têm potencial para ser bons maridos só a veem como uma boa amiga. ""
-                          A ideia de Simon é fingir que a corteja. Dessa forma, de uma tacada só, ele conseguirá afastar as jovens obcecadas por um marido e atrairá vários pretendentes para Daphne. Afinal, se um duque está interessado nela, a jovem deve ter mais atrativos do que aparenta.""",
-        style: TextStyle(
-          fontFamily: 'Roboto',
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          color: AppColors.accentColor.withOpacity(1),
-        ),
+      child: ValueListenableBuilder<bool>(
+        valueListenable: store.loadingBook,
+        builder: (_, loading, __) {
+          if (loading) {
+            return CircularProgressIndicator(color: AppColors.primaryColor);
+          }
+          return Text(
+            store.bookDetails.value.description ?? '',
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: AppColors.accentColor.withOpacity(1),
+            ),
+          );
+        },
       ),
     );
   }
@@ -128,17 +143,20 @@ Simon Basset, o irresistível duque de Hastings, acaba de retornar a Londres dep
           children: [
             Row(
               children: [
-                const Expanded(
-                  child: Text(
-                    'O duque e eu (Os Bridgertons Livro 1)',
-                    style: TextStyle(
-                      fontSize: 20,
+                Expanded(
+                  child: ValueListenableBuilder<BookModel>(
+                    valueListenable: store.bookDetails,
+                    builder: (_, bookDetails, __) => Text(
+                      bookDetails.name ?? '',
+                      style: const TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.favorite),
+                  icon: const Icon(Icons.favorite),
                 )
               ],
             ),
@@ -147,12 +165,15 @@ Simon Basset, o irresistível duque de Hastings, acaba de retornar a Londres dep
                 top: MediaQuery.of(context).size.height * .01,
                 bottom: MediaQuery.of(context).size.height * .05,
               ),
-              child: Text(
-                'Julia Quinn',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.accentColor.withOpacity(1),
+              child: ValueListenableBuilder<BookModel>(
+                valueListenable: store.bookDetails,
+                builder: (_, bookDetails, __) => Text(
+                  bookDetails.author?.name ?? '',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.accentColor.withOpacity(1),
+                  ),
                 ),
               ),
             ),
