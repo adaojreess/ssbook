@@ -14,13 +14,16 @@ class BookRepositoryImpl implements BookRepository {
           name
           id
           cover
+          author {
+            name
+          }
         }
       }
 """;
     final result = await api.value.get(readRepositories);
     final bookList = ((result as ResponseModel<QueryResult>)
             .response
-            ?.data!['favoriteBooks'] as List)
+            ?.data!['allBooks'] as List)
         .map((json) => BookModel.fromJson(json))
         .toList();
     return bookList;

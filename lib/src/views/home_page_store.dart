@@ -20,7 +20,7 @@ class HomePageStore {
     try {
       loadingFavoriteBookList.value = true;
       final list = await BookRepositoryImpl().getFavoriteBookList();
-      allBooks.value = list;
+      favoriteBookList.value = list;
     } catch (e) {
       errorMessageFavoriteBookList.value = "Falha ao carregar dados";
     } finally {
