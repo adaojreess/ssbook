@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
         length: 2,
         child: Scaffold(
           appBar: DefaultAppBar(
+            context: context,
             bottom: _bottomAppBarWidget(),
           ),
           backgroundColor: AppColors.backgroundColor,
