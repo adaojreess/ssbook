@@ -9,15 +9,11 @@ class BookRepositoryImpl implements BookRepository {
   @override
   Future<List<BookModel>> getBookList() async {
     String readRepositories = """
-      query minhaQuery {
-        favoriteBooks {
+      query allBooksQuery {
+        allBooks {
           name
           id
           cover
-          author {
-            id
-            name
-          }
         }
       }
 """;
@@ -31,7 +27,25 @@ class BookRepositoryImpl implements BookRepository {
   }
 
   @override
-  Future<List<BookModel>> getFavoriteBookList() {
-    throw UnimplementedError();
+  Future<List<BookModel>> getFavoriteBookList() async {
+    String readRepositories = """
+      query favoriteBooksQuery {
+        favoriteBooks {
+          name
+          id
+          cover
+          author {
+            name
+          }
+        }
+      }
+""";
+    final result = await api.value.get(readRepositories);
+    final bookList = ((result as ResponseModel<QueryResult>)
+            .response
+            ?.data!['favoriteBooks'] as List)
+        .map((json) => BookModel.fromJson(json))
+        .toList();
+    return bookList;
   }
 }

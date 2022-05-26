@@ -44,16 +44,7 @@ class _HomePageState extends State<HomePage> {
                       topLeft: Radius.circular(32),
                     ),
                   ),
-                  child: Column(
-                    children: [
-                      ..._favoriteAuthorsWidgetList,
-                      _sessionWidget('Biblioteca', showSeeAll: false),
-                      SizedBox(height: MediaQuery.of(context).size.height / 40),
-                      _categoryListWidget(context),
-                      SizedBox(height: MediaQuery.of(context).size.height / 40),
-                      _bookListCardWidget(context)
-                    ],
-                  ),
+                  child: _allBooksWidget(context),
                 ),
               ],
             ),
@@ -91,6 +82,33 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Column _allBooksWidget(BuildContext context) {
+    return Column(
+      children: [
+        ..._favoriteAuthorsWidgetList,
+        _sessionWidget('Biblioteca', showSeeAll: false),
+        SizedBox(height: MediaQuery.of(context).size.height / 40),
+        _categoryListWidget(context),
+        SizedBox(height: MediaQuery.of(context).size.height / 40),
+        ValueListenableBuilder<bool>(
+          valueListenable: store.loadingAllBooks,
+          builder: (_, loading, __) =>
+              loading ? _loadingBookList() : const SizedBox(),
+        ),
+        ValueListenableBuilder<List<BookModel>>(
+          valueListenable: store.allBooks,
+          builder: (_, allBooks, __) {
+            return Column(
+              children: allBooks
+                  .map((book) => _bookListCardWidget(context, book))
+                  .toList(),
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -145,19 +163,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Padding _bookListCardWidget(BuildContext context) {
+  Padding _bookListCardWidget(BuildContext context, BookModel book) {
     return Padding(
-      padding: _defaultMarginBody,
+      padding: _defaultMarginBody.copyWith(
+        bottom: MediaQuery.of(context).size.height / 50,
+      ),
       child: Row(
         children: [
           CachedNetworkImage(
-            imageUrl: 'https://m.media-amazon.com/images/I/51jmxTnOv6L.jpg',
+            imageUrl: book.cover ?? '',
             placeholder: (_, __) => const PlaceholderImageNetwork(),
             errorWidget: (_, __, ___) => const ErrorImageNetwork(),
             imageBuilder: (_, image) => ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: SizedBox(
-                height: MediaQuery.of(context).size.height / 5,
+                // height: MediaQuery.of(context).size.height / 5,
+                width: MediaQuery.of(context).size.width / 4,
                 child: Image(image: image),
               ),
             ),
@@ -167,10 +188,11 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width / 20),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _bookTitle(
-                    'O duque e eu (Os Bridgertons livro novo 1)',
-                  )
+                  _bookTitle(book.name ?? ''),
+                  SizedBox(height: MediaQuery.of(context).size.height / 100),
+                  _authorNameWidget(book.author?.name ?? '')
                 ],
               ),
             ),
@@ -238,16 +260,20 @@ class _HomePageState extends State<HomePage> {
               margin: const EdgeInsets.symmetric(vertical: 10),
               child: _bookTitle(book.name ?? ''),
             ),
-            Text(
-              book.author?.name ?? '',
-              style: TextStyle(
-                color: AppColors.accentColor.withOpacity(1),
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              ),
-            )
+            _authorNameWidget(book.author?.name ?? '')
           ],
         ),
+      ),
+    );
+  }
+
+  Text _authorNameWidget(String authorName) {
+    return Text(
+      authorName,
+      style: TextStyle(
+        color: AppColors.accentColor.withOpacity(1),
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
       ),
     );
   }
@@ -264,12 +290,12 @@ class _HomePageState extends State<HomePage> {
   List<Widget> get _favoriteBooksWidgetList => [
         _sessionWidget('Livros favoritos'),
         ValueListenableBuilder<bool>(
-          valueListenable: store.loadingBookList,
+          valueListenable: store.loadingFavoriteBookList,
           builder: (_, loading, __) =>
-              loading ? _loadingBookList() : SizedBox(),
+              loading ? _loadingBookList() : const SizedBox(),
         ),
         ValueListenableBuilder<List<BookModel>>(
-          valueListenable: store.bookList,
+          valueListenable: store.favoriteBookList,
           builder: (_, bookList, __) {
             return Container(
               margin: const EdgeInsets.symmetric(vertical: 30),

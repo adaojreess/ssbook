@@ -5,22 +5,38 @@ import 'package:flutter/material.dart';
 class HomePageStore {
   HomePageStore() {
     getFavoriteBookList();
+    getBookList();
   }
 
-  final ValueNotifier<bool> loadingBookList = ValueNotifier(false);
-  final ValueNotifier<List<BookModel>> bookList = ValueNotifier([]);
-  final ValueNotifier<String> errorMessage = ValueNotifier("");
+  final ValueNotifier<bool> loadingFavoriteBookList = ValueNotifier(false);
+  final ValueNotifier<List<BookModel>> favoriteBookList = ValueNotifier([]);
+  final ValueNotifier<String> errorMessageFavoriteBookList = ValueNotifier("");
+
+  final ValueNotifier<bool> loadingAllBooks = ValueNotifier(false);
+  final ValueNotifier<List<BookModel>> allBooks = ValueNotifier([]);
+  final ValueNotifier<String> errorMessageAllBooks = ValueNotifier("");
 
   Future<void> getFavoriteBookList() async {
     try {
-      loadingBookList.value = true;
-      final _list = await BookRepositoryImpl().getBookList();
-      await Future.delayed(const Duration(seconds: 5));
-      bookList.value = _list;
+      loadingFavoriteBookList.value = true;
+      final list = await BookRepositoryImpl().getFavoriteBookList();
+      allBooks.value = list;
     } catch (e) {
-      errorMessage.value = "Falha ao carregar dados";
+      errorMessageFavoriteBookList.value = "Falha ao carregar dados";
     } finally {
-      loadingBookList.value = false;
+      loadingFavoriteBookList.value = false;
+    }
+  }
+
+  Future<void> getBookList() async {
+    try {
+      loadingAllBooks.value = true;
+      final list = await BookRepositoryImpl().getBookList();
+      allBooks.value = list;
+    } catch (e) {
+      errorMessageAllBooks.value = "Falha ao carregar dados";
+    } finally {
+      loadingAllBooks.value = false;
     }
   }
 }
