@@ -30,12 +30,9 @@ class BookPage extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: double.infinity,
-                    child: Hero(
-                      tag: 'bookCover${book.id}',
-                      child: Image(
-                        image: image,
-                        fit: BoxFit.contain,
-                      ),
+                    child: Image(
+                      image: image,
+                      fit: BoxFit.contain,
                     ),
                   )
                 ],

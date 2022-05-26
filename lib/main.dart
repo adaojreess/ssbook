@@ -1,5 +1,5 @@
 import 'package:desafio_studio_sol/src/theme/default_theme.dart';
-import 'package:desafio_studio_sol/src/views/home_page.dart';
+import 'package:desafio_studio_sol/src/views/home/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'SSBOOK',
       theme: DefaultTheme.theme(context),
-      home: const HomePage(title: 'Home'),
+      home: const HomePage(),
     );
   }
 }

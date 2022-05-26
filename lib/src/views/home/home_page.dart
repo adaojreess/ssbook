@@ -1,20 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:desafio_studio_sol/src/components/error_image_network/error_image_network.dart';
+import 'package:desafio_studio_sol/src/components/placeholder_image_network/placeholder_image_network.dart';
 import 'package:desafio_studio_sol/src/theme/app_colors.dart';
 import 'package:desafio_studio_sol/src/views/book/book_page.dart';
-import 'package:desafio_studio_sol/src/views/home_page_store.dart';
+import 'package:desafio_studio_sol/src/views/home/home_page_store.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../components/appbar/dafault_app_bar.dart';
-import '../components/placeholder_image_network/placeholder_image_network.dart';
-import '../models/author_model.dart';
-import '../models/book_model.dart';
+import '../../components/appbar/dafault_app_bar.dart';
+import '../../models/author_model.dart';
+import '../../models/book_model.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -72,11 +70,11 @@ class _HomePageState extends State<HomePage> {
                 icon: Icon(
                   Icons.search,
                 ),
-                label: 'Busca',
+                label: 'Buscar',
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.add_circle_rounded,
+                  Icons.favorite,
                 ),
                 label: 'Favoritos',
               ),
@@ -274,10 +272,7 @@ class _HomePageState extends State<HomePage> {
               imageBuilder: (_, image) {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: Hero(
-                    tag: 'bookCover${book.id}',
-                    child: Image(image: image),
-                  ),
+                  child: Image(image: image),
                 );
               },
               errorWidget: (_, __, ___) => const ErrorImageNetwork(),
@@ -435,7 +430,7 @@ class _HomePageState extends State<HomePage> {
       margin: const EdgeInsets.symmetric(
         horizontal: 20,
       ),
-      alignment: Alignment.centerLeft,
+      alignment: Alignment.center,
       child: Tab(
         child: Text(
           title,
