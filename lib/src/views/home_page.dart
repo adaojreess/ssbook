@@ -167,41 +167,51 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Padding _bookListCardWidget(BuildContext context, BookModel book) {
-    return Padding(
-      padding: _defaultMarginBody.copyWith(
-        bottom: MediaQuery.of(context).size.height / 50,
-      ),
-      child: Row(
-        children: [
-          CachedNetworkImage(
-            imageUrl: book.cover ?? '',
-            placeholder: (_, __) => const PlaceholderImageNetwork(),
-            errorWidget: (_, __, ___) => const ErrorImageNetwork(),
-            imageBuilder: (_, image) => ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                // height: MediaQuery.of(context).size.height / 5,
-                width: MediaQuery.of(context).size.width / 4,
-                child: Image(image: image),
+  Widget _bookListCardWidget(BuildContext context, BookModel book) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BookPage(book),
+          ),
+        );
+      },
+      child: Padding(
+        padding: _defaultMarginBody.copyWith(
+          bottom: MediaQuery.of(context).size.height / 50,
+        ),
+        child: Row(
+          children: [
+            CachedNetworkImage(
+              imageUrl: book.cover ?? '',
+              placeholder: (_, __) => const PlaceholderImageNetwork(),
+              errorWidget: (_, __, ___) => const ErrorImageNetwork(),
+              imageBuilder: (_, image) => ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: SizedBox(
+                  // height: MediaQuery.of(context).size.height / 5,
+                  width: MediaQuery.of(context).size.width / 4,
+                  child: Image(image: image),
+                ),
               ),
             ),
-          ),
-          Flexible(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width / 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _bookTitle(book.name ?? ''),
-                  SizedBox(height: MediaQuery.of(context).size.height / 100),
-                  _authorNameWidget(book.author?.name ?? '')
-                ],
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width / 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _bookTitle(book.name ?? ''),
+                    SizedBox(height: MediaQuery.of(context).size.height / 100),
+                    _authorNameWidget(book.author?.name ?? '')
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

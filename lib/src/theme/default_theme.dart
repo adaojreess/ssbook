@@ -11,7 +11,7 @@ class DefaultTheme {
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: AppColors.primaryColor,
         ).copyWith(
-          secondary: AppColors.accentColor,
+          secondary: AppColors.accentColor.withOpacity(1),
         ),
       );
 }
