@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:desafio_studio_sol/global_vars.dart';
 import 'package:desafio_studio_sol/src/components/error_image_network/error_image_network.dart';
-import 'package:desafio_studio_sol/src/repositories/book_repository_impl.dart';
 import 'package:desafio_studio_sol/src/theme/app_colors.dart';
 import 'package:desafio_studio_sol/src/views/book/book_page.dart';
 import 'package:desafio_studio_sol/src/views/home_page_store.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appbar/dafault_app_bar.dart';
@@ -22,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final HomePageStore store = HomePageStore();
+  final categories = ['Todos', 'Romance', 'Aventura', 'Tecnologia', 'Ficção'];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -118,20 +118,22 @@ class _HomePageState extends State<HomePage> {
       child: Padding(
         padding: _defaultMarginBody,
         child: Row(
-          children: List.generate(
-            10,
-            (index) => Container(
-              margin: EdgeInsets.only(
-                left: index == 0 ? 0 : MediaQuery.of(context).size.width * .01,
-                right: index == 9 ? 0 : MediaQuery.of(context).size.width * .01,
-              ),
-              child: _categoryCardWidget(
-                context,
-                "Todos",
-                currentCategory: index == 0,
-              ),
-            ),
-          ),
+          children: categories
+              .map(
+                (category) => Container(
+                  margin: EdgeInsets.only(
+                    left: category == 'Todos'
+                        ? 0
+                        : MediaQuery.of(context).size.width * .01,
+                    right: categories.indexOf(category) == 9
+                        ? 0
+                        : MediaQuery.of(context).size.width * .01,
+                  ),
+                  child: _categoryCardWidget(context, category,
+                      currentCategory: category == 'Todos'),
+                ),
+              )
+              .toList(),
         ),
       ),
     );
